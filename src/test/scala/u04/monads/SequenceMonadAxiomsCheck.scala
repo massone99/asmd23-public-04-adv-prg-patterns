@@ -7,18 +7,6 @@ import u04.datastructures.*
 import u04.monads.Monads.Monad
 import u04.monads.Sequences.{Sequence, given}
 
-abstract class MonadLawsTest[M[_]: Monad] extends Properties("Monad"):
-  implicit def arbitraryMonad[A: Arbitrary]: Arbitrary[M[A]]
-
-  property("leftIdentity") = forAll: (x: Int, f: Int => M[Int]) =>
-    implicitly[Monad[M]].unit(x).flatMap(f) == f(x)
-
-  property("rightIdentity") = forAll: (mx: M[Int]) =>
-    mx.flatMap(implicitly[Monad[M]].unit) == mx
-
-  property("associativity") = forAll: (mx: M[Int], f: Int => M[Int], g: Int => M[Int]) =>
-    mx.flatMap(f).flatMap(g) == mx.flatMap(x => f(x).flatMap(g))
-
 object SequenceMonadAxiomsCheck extends MonadLawsTest[Sequence]:
   import Sequence.*
   
